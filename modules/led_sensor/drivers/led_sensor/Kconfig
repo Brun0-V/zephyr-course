@@ -1,0 +1,8 @@
+menuconfig LED_SENSOR
+	bool "LED sensor driver"
+	default y
+	depends on DT_HAS_BRUNO_LED_SENSOR_ENABLED
+	select GPIO
+	select SENSOR
+	help
+	  Driver that exposes an on-board LED through the sensor API.

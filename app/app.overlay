@@ -2,4 +2,9 @@
 	aliases {
 		app-led = &red_led;
 	};
+
+	led_sensor0: led_sensor {
+		compatible = "bruno,led-sensor";
+		gpios = <&gpio4 18 GPIO_ACTIVE_LOW>;
+	};
 };

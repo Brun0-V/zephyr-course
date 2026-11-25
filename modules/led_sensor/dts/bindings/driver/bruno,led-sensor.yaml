@@ -1,0 +1,8 @@
+description: On-board LED exposed as a sensor
+
+compatible: "bruno,led-sensor"
+
+properties:
+  gpios:
+    type: phandle-array
+    required: true
