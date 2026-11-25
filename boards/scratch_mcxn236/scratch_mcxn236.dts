@@ -1,0 +1,43 @@
+/dts-v1/;
+
+#include <nxp/mcx/mcxn/nxp_mcxn23x.dtsi>
+#include <nxp/mcx/MCXN236VDF-pinctrl.h>
+
+/ {
+	model = "Scratch MCXN236 board";
+	compatible = "nxp,mcxn236", "nxp,mcx";
+
+	chosen {
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash;
+		zephyr,console = &flexcomm4_lpuart4;
+	};
+};
+
+&pinctrl {
+	pinmux_flexcomm4_lpuart: pinmux_flexcomm4_lpuart {
+		group0 {
+			pinmux = <FC4_P0_PIO1_8>,
+				 <FC4_P1_PIO1_9>;
+			slew-rate = "fast";
+			drive-strength = "low";
+			input-enable;
+			bias-pull-up;
+		};
+	};
+};
+
+&flexcomm4 {
+	status = "okay";
+};
+
+&flexcomm4_lpuart4 {
+	status = "okay";
+	current-speed = <115200>;
+	pinctrl-0 = <&pinmux_flexcomm4_lpuart>;
+	pinctrl-names = "default";
+};
+
+&systick {
+	status = "okay";
+};
