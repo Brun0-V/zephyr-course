@@ -2,6 +2,7 @@
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <led_sensor/led_sensor.h>
 
 #define DT_DRV_COMPAT bruno_led_sensor
 LOG_MODULE_REGISTER(led_sensor, CONFIG_SENSOR_LOG_LEVEL);
@@ -12,6 +13,7 @@ struct led_sensor_config {
 
 struct led_sensor_data {
 	uint32_t on_count;
+	bool enabled;
 };
 
 /* Turns the LED on */
@@ -19,6 +21,10 @@ static int led_sensor_sample_fetch(const struct device *dev, enum sensor_channel
 {
 	const struct led_sensor_config *cfg = dev->config;
 	struct led_sensor_data *data = dev->data;
+
+	if (!data->enabled) {
+		return 0;
+	}
 
 	data->on_count++;
 	return gpio_pin_set_dt(&cfg->led, 1);
@@ -41,9 +47,20 @@ static DEVICE_API(sensor, led_sensor_api) = {
 	.channel_get = led_sensor_channel_get,
 };
 
+int led_sensor_set_enabled(const struct device *dev, bool enabled)
+{
+	struct led_sensor_data *data = dev->data;
+
+	data->enabled = enabled;
+	return 0;
+}
+
 static int led_sensor_init(const struct device *dev)
 {
 	const struct led_sensor_config *cfg = dev->config;
+	struct led_sensor_data *data = dev->data;
+
+	data->enabled = true;
 
 	if (!gpio_is_ready_dt(&cfg->led)) {
 		return -ENODEV;
